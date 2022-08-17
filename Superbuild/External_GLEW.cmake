@@ -24,6 +24,7 @@ if(NOT DEFINED GLEW_ROOT AND NOT Autoscoper_USE_SYSTEM_${proj})
 	
 	ExternalProject_Add(${proj}
 		URL https://sourceforge.net/projects/glew/files/glew/2.2.0/glew-2.2.0.zip
+		URL_MD5 970535b75b1b69ebd018a0fa05af63d1
 		SOURCE_DIR ${EP_SOURCE_DIR}
 		BINARY_DIR ${EP_BINARY_DIR}
 		INSTALL_DIR ${EP_INSTALL_DIR}
