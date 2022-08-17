@@ -9,7 +9,7 @@ endif()
 #-----------------------------------------------------------------------------
 # Build with Cuda Option - Enabled by default
 #-----------------------------------------------------------------------------
-option(BUILD_WITH_CUDA "Build With CUDA instead of OpenCL" ON)
+option(Autoscoper_BUILD_WITH_CUDA "Build With CUDA instead of OpenCL" ON)
 
 #-----------------------------------------------------------------------------
 # Superbuild Option - Enabled by default
@@ -44,7 +44,7 @@ cmake_minimum_required(VERSION 3.8 FATAL_ERROR)
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
 set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
 
-if(BUILD_WITH_CUDA)
+if(Autoscoper_BUILD_WITH_CUDA)
   add_definitions(-DWITH_CUDA)
 endif()
 
