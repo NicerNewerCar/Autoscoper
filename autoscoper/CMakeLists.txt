@@ -1,3 +1,4 @@
+set(CMAKE_CURRENT_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 find_package(OpenGL)
 
@@ -116,7 +117,7 @@ add_executable(autoscoper  ${GUI_TYPE} ${autoscoper_SOURCES} ${autoscoper_HEADER
 
 if(Autoscoper_BUILD_WITH_CUDA)
   find_package(CUDA REQUIRED)
-  target_include_directories(autoscoper PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src/gpu/cuda/cutil)
+  target_include_directories(autoscoper PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/gpu/cuda/cutil)
   set(GPU_LIBRARIES
     ${CUDA_LIBRARIES}
   )
@@ -137,10 +138,7 @@ target_link_libraries(autoscoper PUBLIC libautoscoper
   ${Qt5Network_LIBRARIES}
   ${Qt5Gui_LIBRARIES})
 
-target_include_directories(autoscoper PUBLIC
-  ${CMAKE_CURRENT_BINARY_DIR}
-  ${CMAKE_CURRENT_SOURCE_DIR}/src
-)
+target_include_directories(autoscoper PUBLIC ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
 target_include_directories(autoscoper PUBLIC
   ../math
   ../libautoscoper/src
@@ -150,10 +148,10 @@ target_include_directories(autoscoper PUBLIC
   ${Qt5Network_INCLUDE_DIRS}
   ${Qt5Gui_INCLUDE_DIRS})
 
-find_package(GLEW REQUIRED CONFIG)
+find_package(GLEW)
 target_link_libraries(autoscoper PUBLIC GLEW::GLEW)
 target_compile_definitions(autoscoper PUBLIC -DUSE_GLEW)
-find_package(TIFF REQUIRED)
+find_package(TIFF)
 target_link_libraries(autoscoper PUBLIC TIFF::TIFF)
 target_compile_definitions(autoscoper PUBLIC -DUSE_LIBTIFF)
 
