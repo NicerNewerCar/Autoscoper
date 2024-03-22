@@ -1374,6 +1374,18 @@ struct Mat4
     // clang-format on
   }
 
+  //! USE FOR 4x3 Mats only
+
+  friend Vec4<T> operator*(const Mat4& m, const Vec3<T>& v)
+  {
+    // clang-format off
+    return Vec4<T>(m(0, 0) * v.x + m(0, 1) * v.y + m(0, 2) * v.z,
+                   m(1, 0) * v.x + m(1, 1) * v.y + m(1, 2) * v.z,
+                   m(2, 0) * v.x + m(2, 1) * v.y + m(2, 2) * v.z,
+                   m(3, 0) * v.x + m(3, 1) * v.y + m(3, 2) * v.z);
+    // clang-format on
+  }
+
   //! Returns the point transformed by the specified matrix
 
   friend Vec3<T> mul_pt(const Mat4& m, const Vec3<T>& p)
@@ -1586,5 +1598,4 @@ struct Mat4
 
   T data[4][4];
 };
-
 #endif // MATRIX_HPP

@@ -753,9 +753,52 @@ double Tracker::minimizationFunc(const double* values) const
   double xyzypr[6] = { x_val, y_val, z_val, eulers.z, eulers.y, eulers.x };
   CoordFrame xcframe = CoordFrame::from_xyzypr(xyzypr);
 
-  CoordFrame manip = CoordFrame::from_xyzAxis_angle(values);
-  xcframe = xcframe * (const_cast<Trial&>(trial_)).getVolumeMatrix(-1)->inverse() * manip
-            * *(const_cast<Trial&>(trial_)).getVolumeMatrix(-1);
+  if (true) { // Set this up to be some flag toggled by the GUI
+    // Increment XYZ pos
+    x_val += values[0];
+    y_val += values[1];
+    z_val += values[2];
+
+    // Compute the basis for the hyper plane of the starting quaternion
+    // https://www.prof-schmidt-consulting.de/pdf/jschmidt_vmv_2001.pdf
+
+    Vec3f v(values + 3);
+    if (v.x != 0 && v.y != 0 && v.z != 0) {
+      // clang-format off
+      // Treat this as a 4x3 Mat
+      Mat4f B_prime = Mat4f( // Indexed: Row,Col
+        (-quat_val.x / quat_val.w), (-quat_val.y / quat_val.w), (-quat_val.z / quat_val.w), 0.0f,
+                              1.0f,                       0.0f,                       0.0f, 0.0f,
+                              0.0f,                       1.0f,                       0.0f, 0.0f,
+                              0.0f,                       0.0f,                       1.0f, 0.0f
+      );
+      // clang-format on
+
+      // Compute B as B_prime = B * Sigma * V ^ T [SVD]
+
+      // Transform v by B
+      Vec4f v4 = B_prime * v;
+
+      // Compute new quaternion
+      Quatf new_quat = compute_optimized(quat_val, v4);
+
+      // Compute new CoordFrame
+      eulers = new_quat.toEuler();
+      xyzypr[0] = x_val;
+      xyzypr[1] = y_val;
+      xyzypr[2] = z_val;
+      xyzypr[3] = eulers.z;
+      xyzypr[4] = eulers.y;
+      xyzypr[5] = eulers.x;
+      xcframe = CoordFrame::from_xyzypr(xyzypr);
+    }
+
+  } else { // Old method -> Axis angle rep
+    CoordFrame manip = CoordFrame::from_xyzAxis_angle(values);
+    // This just incremants the translation by values and rotates the rot mat by a little
+    xcframe = xcframe * (const_cast<Trial&>(trial_)).getVolumeMatrix(-1)->inverse() * manip
+              * *(const_cast<Trial&>(trial_)).getVolumeMatrix(-1);
+  }
 
   unsigned int idx = trial_.current_volume;
   xcframe.to_xyzypr(xyzypr);

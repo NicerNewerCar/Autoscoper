@@ -73,6 +73,14 @@ struct Quat
     z = q->z;
   }
 
+  Quat(const Vec4<T>& v)
+  {
+    w = v.x;
+    x = v.y;
+    y = v.z;
+    z = v.w;
+  }
+
   //! Constructs a quaternion from euler angles
   //! See
   //! https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles#Euler_angles_(in_3-2-1_sequence)_to_quaternion_conversion
@@ -417,6 +425,15 @@ struct Quat
   //! Reads the elements of the specified quaternion from the input stream
 
   friend std::istream& operator<<(std::istream& is, Quat& q) { return is >> q.w >> q.x >> q.y >> q.z; }
+
+  friend Quat compute_optimized(const Quat& q, const Vec4<T>& v4)
+  {
+    Vec4<T> v4N = unit(v4);
+
+    T theta = len(v4);
+
+    return Quat(sin(theta) * v4N) + cos(theta) * q;
+  }
 
   //! Underlying data array
 
