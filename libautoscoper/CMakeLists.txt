@@ -142,6 +142,7 @@ if (Autoscoper_COLLISION_DETECTION) # Add definitions for collision detection
     CommonCore
     CommonSystem
     FiltersSources
+    FiltersModeling
     IOGeometry
   )
   if(NOT VTK_FOUND)
